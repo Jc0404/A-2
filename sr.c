@@ -26,15 +26,14 @@
 #define WINDOWSIZE 6              /* the maximum number of buffered unacked packet */
 #define SEQSPACE (WINDOWSIZE * 2) /* the min sequence space for GBN must be at least windowsize * 2 */
 #define NOTINUSE (-1)             /* used to fill header fields that are not being used */
-extern float time                 /* access simulator time*/
+extern float time;                /* access simulator time*/
 
-    /* generic procedure to compute the checksum of a packet.  Used by both sender and receiver
-       the simulator will overwrite part of your packet with 'z's.  It will not overwrite your
-       original checksum.  This procedure must generate a different checksum to the original if
-       the packet is corrupted.
-    */
-    int
-    ComputeChecksum(struct pkt packet)
+/* generic procedure to compute the checksum of a packet.  Used by both sender and receiver
+   the simulator will overwrite part of your packet with 'z's.  It will not overwrite your
+   original checksum.  This procedure must generate a different checksum to the original if
+   the packet is corrupted.
+*/
+int ComputeChecksum(struct pkt packet)
 {
   int checksum = 0;
   int i;
@@ -64,7 +63,7 @@ static int A_windowcount;               /* the number of packets currently await
 static int A_nextseqnum;                /* the next sequence number to be used by the sender */
 
 /*helper: schedule timer for earliest unacked packet*/
-static void help_set_timer()
+static void help_set_timer(void)
 {
 }
 
@@ -99,10 +98,10 @@ void A_output(struct msg message)
     tolayer3(A, sendpkt);
 
     /* start timer if first packet in window */
-    starttimer(A, RTT)
+    starttimer(A, RTT);
 
-        /* get next sequence number, wrap back to 0 */
-        A_nextseqnum = (A_nextseqnum + 1) % SEQSPACE;
+    /* get next sequence number, wrap back to 0 */
+    A_nextseqnum = (A_nextseqnum + 1) % SEQSPACE;
   }
   /* if blocked,  window is full */
   else
