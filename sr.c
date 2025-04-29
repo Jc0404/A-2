@@ -1,8 +1,11 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <stdbool.h>
 #include "emulator.h"
 #include "sr.h"
+
+#define bool int
+#define true 1
+#define false 0
 
 /* ******************************************************************
    Go Back N protocol.  Adapted from J.F.Kurose
