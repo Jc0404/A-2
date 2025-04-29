@@ -99,7 +99,7 @@ void A_output(struct msg message)
     tolayer3(A, sendpkt);
 
     /* start timer if first packet in window */
-    // starttimer(A, RTT);
+    /* starttimer(A, RTT); */
     help_set_timer();
 
     /* get next sequence number, wrap back to 0 */
