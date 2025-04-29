@@ -90,6 +90,7 @@ void A_output(struct msg message)
     /* windowlast will always be 0 for alternating bit; but not for GoBackN */
 
     sendbuffer[A_nextseqnum] = sendpkt;
+    acked[A_nextseqnum] = false;
     A_windowcount++;
 
     /* send out packet */
@@ -98,7 +99,8 @@ void A_output(struct msg message)
     tolayer3(A, sendpkt);
 
     /* start timer if first packet in window */
-    starttimer(A, RTT);
+    // starttimer(A, RTT);
+    help_set_timer();
 
     /* get next sequence number, wrap back to 0 */
     A_nextseqnum = (A_nextseqnum + 1) % SEQSPACE;
