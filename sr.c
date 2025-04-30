@@ -61,6 +61,7 @@ bool IsCorrupted(struct pkt packet)
 
 static struct pkt sendbuffer[SEQSPACE]; /* array for storing packets waiting for ACK */
 bool acked[SEQSPACE];                   /* array to store the acked packet*/
+static double sendtime[SEQSPACE];       /* time when each packet was last sent*/
 static int A_windowfirst;               /* array indexes of the first packet awaiting ACK */
 static int A_windowcount;               /* the number of packets currently awaiting an ACK */
 static int A_nextseqnum;                /* the next sequence number to be used by the sender */
@@ -68,6 +69,33 @@ static int A_nextseqnum;                /* the next sequence number to be used b
 /*helper: schedule timer for earliest unacked packet*/
 static void help_set_timer(void)
 {
+  /* stop existing timer */
+  stoptimer(A);
+  int i;
+  bool flag = 0;
+  double early = 0;
+  int p = A_windowfirst;
+  for (i = 0; i < A_windowcount; i++)
+  {
+    int pos = (A_windowfirst + i) % SEQSPACE;
+    if (!acked[pos])
+    {
+      double end_time = sendtime[pos] + RTT;
+      if (!flag || end_time < early)
+      {
+        early = end_time;
+        flag = true;
+        p = pos;
+      }
+    }
+  }
+  if (flag)
+  {
+    double inter = early - time;
+    if (inter < 0)
+      inter = 0;
+    starttimer(A, inter);
+  }
 }
 
 /* called from layer 5 (application layer), passed the message to be sent to other side */
