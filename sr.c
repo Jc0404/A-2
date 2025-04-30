@@ -215,10 +215,14 @@ void A_timerinterrupt(void)
     if (TRACE > 0)
       printf("---A: resending packet %d\n", (sendbuffer[(A_windowfirst + i) % WINDOWSIZE]).seqnum);
 
-    tolayer3(A, sendbuffer[(A_windowfirst + i) % WINDOWSIZE]);
-    packets_resent++;
-    if (i == 0)
-      starttimer(A, RTT);
+    int pos = (A_windowfirst + i) % SEQSPACE;
+    if (!acked[pos] && time - sendtime[pos] >= RTT)
+    {
+      tolayer3(A, sendbuffer[pos]);
+      packets_resent++;
+      sendtime[pos] = time;
+      help_set_timer();
+    }
   }
 }
 
@@ -234,6 +238,12 @@ void A_init(void)
       so initially this is set to -1
     */
   A_windowcount = 0;
+  int i;
+  for (i = 0; i < SEQSPACE; i++)
+  {
+    acked[i] = true;
+    sendtime[i] = 0;
+  }
 }
 
 /********* Receiver (B)  variables and procedures ************/
