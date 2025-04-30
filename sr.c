@@ -70,11 +70,11 @@ static int A_nextseqnum;                /* the next sequence number to be used b
 static void help_set_timer(void)
 {
   /* stop existing timer */
-  stoptimer(A);
   int i;
   bool flag = 0;
   double early = 0;
   int p = A_windowfirst;
+  stoptimer(A);
   for (i = 0; i < A_windowcount; i++)
   {
     int pos = (A_windowfirst + i) % SEQSPACE;
