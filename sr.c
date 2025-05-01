@@ -69,29 +69,31 @@ static int A_nextseqnum;                /* the next sequence number to be used b
 /*helper: schedule timer for earliest unacked packet*/
 static void help_set_timer(void)
 {
+  int i, pos;
+  bool flag;
+  double early;
+  double end_time;
+  double inter;
   /* stop existing timer */
-  int i;
-  bool flag = 0;
-  double early = 0;
-  int p = A_windowfirst;
   stoptimer(A);
+  flag = 0;
+  early = 0;
   for (i = 0; i < A_windowcount; i++)
   {
-    int pos = (A_windowfirst + i) % SEQSPACE;
+    pos = (A_windowfirst + i) % SEQSPACE;
     if (!acked[pos])
     {
-      double end_time = sendtime[pos] + RTT;
+      end_time = sendtime[pos] + RTT;
       if (!flag || end_time < early)
       {
         early = end_time;
         flag = true;
-        p = pos;
       }
     }
   }
   if (flag)
   {
-    double inter = early - time;
+    inter = early - time;
     if (inter < 0)
       inter = 0;
     starttimer(A, inter);
@@ -130,7 +132,6 @@ void A_output(struct msg message)
     tolayer3(A, sendpkt);
 
     /* start timer if first packet in window */
-    /* starttimer(A, RTT); */
     help_set_timer();
 
     /* get next sequence number, wrap back to 0 */
@@ -256,8 +257,6 @@ void B_input(struct pkt packet)
     if (TRACE > 0)
       printf("----B: packet %d is correctly received, send ACK!\n", packet.seqnum);
     packets_received++;
-
-    /* deliver to receiving application */
 
     /* send an ACK for the received packet */
     sendpkt.acknum = seq;
