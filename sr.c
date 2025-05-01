@@ -61,11 +61,10 @@ bool IsCorrupted(struct pkt packet)
 
 static struct pkt sendbuffer[SEQSPACE]; /* array for storing packets waiting for ACK */
 bool acked[SEQSPACE];                   /* array to store the acked packet*/
-static double sendtime[SEQSPACE];       /* time when each packet was last sent*/
-static int A_windowfirst;               /* array indexes of the first packet awaiting ACK */
-static int A_windowcount;               /* the number of packets currently awaiting an ACK */
-static int A_nextseqnum;                /* the next sequence number to be used by the sender */
-static int time_flag;                   /* marks if the timer is running */
+
+static int A_windowfirst; /* array indexes of the first packet awaiting ACK */
+static int A_windowcount; /* the number of packets currently awaiting an ACK */
+static int A_nextseqnum;  /* the next sequence number to be used by the sender */
 
 /* called from layer 5 (application layer), passed the message to be sent to other side */
 void A_output(struct msg message)
@@ -90,7 +89,7 @@ void A_output(struct msg message)
 
     sendbuffer[A_nextseqnum] = sendpkt;
     acked[A_nextseqnum] = false;
-    sendtime[A_nextseqnum] = RTT;
+
     A_windowcount++;
 
     /* send out packet */
@@ -99,11 +98,8 @@ void A_output(struct msg message)
     tolayer3(A, sendpkt);
 
     /* start timer if first packet in window */
-    if (!time_flag)
-    {
-      starttimer(A, TICK);
-      time_flag = true;
-    }
+    if (A_windowcount == 1)
+      starttimer(A, RTT);
 
     /* get next sequence number, wrap back to 0 */
     A_nextseqnum = (A_nextseqnum + 1) % SEQSPACE;
@@ -150,10 +146,10 @@ void A_input(struct pkt packet)
         A_windowcount--;
       }
 
-      if (A_windowcount == 0)
+      stoptimer(A);
+      if (A_windowcount >= 0)
       {
-        stoptimer(A);
-        time_flag = false;
+        starttimer(A, RTT);
       }
     }
     else if (TRACE > 0)
@@ -166,39 +162,18 @@ void A_input(struct pkt packet)
 /* called when A's timer goes off */
 void A_timerinterrupt(void)
 {
-  int i, pos;
-  int flag;
-
-  flag = 0;
+  int i, p;
+  if (TRACE > 0)
+    printf("----A: time out,resend packets!\n");
   for (i = 0; i < A_windowcount; i++)
   {
-    pos = (A_windowfirst + i) % SEQSPACE;
-    if (!acked[pos])
-    {
-      sendtime[pos] -= TICK;
-      if (sendtime[pos] <= 0)
-      {
-        if (flag == 0)
-        {
-          if (TRACE > 0)
-            printf("----A: time out,resend packets!\n");
-          flag = 1;
-        }
-        if (TRACE > 0)
-          printf("---A: resending packet %d\n", (sendbuffer[pos]).seqnum);
-        tolayer3(A, sendbuffer[pos]);
-        packets_resent++;
-        sendtime[pos] = RTT;
-      }
-    }
-  }
-  if (A_windowcount > 0)
-  {
-    starttimer(A, TICK);
-  }
-  else
-  {
-    time_flag = false;
+    p = (i + A_windowfirst) % SEQSPACE;
+    if (TRACE > 0)
+      printf("---A: resending packet %d\n", (sendbuffer[p]).seqnum);
+    tolayer3(A, sendbuffer[p]);
+    packets_resent++;
+    if (i == 0)
+      starttimer(A, RTT);
   }
 }
 
@@ -216,11 +191,9 @@ void A_init(void)
     */
   A_windowcount = 0;
 
-  time_flag = false;
   for (i = 0; i < SEQSPACE; i++)
   {
     acked[i] = true;
-    sendtime[i] = 0;
   }
 }
 
