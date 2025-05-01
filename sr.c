@@ -167,10 +167,9 @@ void A_input(struct pkt packet)
 void A_timerinterrupt(void)
 {
   int i, pos;
+  int flag;
 
-  if (TRACE > 0)
-    printf("----A: time out, resend packets!\n");
-
+  flag = 0;
   for (i = 0; i < A_windowcount; i++)
   {
     pos = (A_windowfirst + i) % SEQSPACE;
@@ -179,6 +178,12 @@ void A_timerinterrupt(void)
       sendtime[pos] -= TICK;
       if (sendtime[pos] <= 0)
       {
+        if (flag == 0)
+        {
+          if (TRACE > 0)
+            printf("----A: time out,resend packets!\n");
+          flag = 1;
+        }
         if (TRACE > 0)
           printf("---A: resending packet %d\n", (sendbuffer[pos]).seqnum);
         tolayer3(A, sendbuffer[pos]);
