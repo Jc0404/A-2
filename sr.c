@@ -273,7 +273,7 @@ void B_input(struct pkt packet)
     /* send out packet*/
     tolayer3(B, sendpkt);
   }
-  else if ((!IsCorrupted(packet)) && (B_windowfirst - seq + SEQSPACE) % SEQSPACE > 0 && (B_windowfirst - seq + SEQSPACE) % SEQSPACE <= WINDOWSIZE)
+  else
   {
     /* packet is corrupted or out of order resend last ACK */
     if (TRACE > 0)
@@ -293,9 +293,6 @@ void B_input(struct pkt packet)
 
     /* send out packet */
     tolayer3(B, sendpkt);
-  }
-  else
-  {
   }
 }
 
