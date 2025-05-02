@@ -257,9 +257,6 @@ void B_input(struct pkt packet)
   }
   else
   {
-    /* packet is corrupted or out of order resend last ACK */
-    if (TRACE > 0)
-      printf("----B: packet corrupted or not expected sequence number, resend ACK!\n");
   }
 }
 
