@@ -216,19 +216,22 @@ void B_input(struct pkt packet)
 {
   struct pkt sendpkt;
   int i;
+  int l;
+  int r;
   int seq = packet.seqnum;
-  int pos = (seq - B_windowfirst + SEQSPACE) % SEQSPACE;
 
   /* if not corrupted and received packet is in order */
-  if ((!IsCorrupted(packet)) && pos < WINDOWSIZE)
+  if ((!IsCorrupted(packet)))
   {
+    l = B_windowfirst;
+    r = (B_windowfirst + WINDOWSIZE - 1 + SEQSPACE) % SEQSPACE;
     if (TRACE > 0)
       printf("----B: packet %d is correctly received, send ACK!\n", packet.seqnum);
     packets_received++;
 
     /* send an ACK for the received packet */
     sendpkt.acknum = seq;
-    if (!received[seq])
+    if (!received[seq] && ((l <= r && seq >= l && seq <= r) || (l > r && (seq >= l || seq <= r))))
     {
       recvbuffer[seq] = packet;
       received[seq] = true;
