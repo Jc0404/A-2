@@ -119,6 +119,8 @@ void A_output(struct msg message)
 void A_input(struct pkt packet)
 {
   int ack, pos;
+  int oddest;
+
   /* if received ACK is not corrupted */
   if (!IsCorrupted(packet))
   {
@@ -132,24 +134,30 @@ void A_input(struct pkt packet)
     pos = (ack + 1 - A_windowfirst + SEQSPACE) % SEQSPACE;
     if (A_windowcount != 0 && !acked[ack] && pos <= WINDOWSIZE)
     {
-      acked[ack] = true;
-
-      /* packet is a new ACK*/
-      if (TRACE > 0)
-        printf("----A: ACK %d is not a duplicate\n", packet.acknum);
-      new_ACKs++;
-
-      /* slide window*/
-      while (acked[A_windowfirst] && A_windowcount > 0)
+      if (!acked[ack] && pos <= WINDOWSIZE)
       {
-        A_windowfirst = (A_windowfirst + 1) % SEQSPACE;
-        A_windowcount--;
-      }
+        acked[ack] = true;
 
-      stoptimer(A);
-      if (A_windowcount >= 0)
-      {
-        starttimer(A, RTT);
+        /* packet is a new ACK*/
+        if (TRACE > 0)
+          printf("----A: ACK %d is not a duplicate\n", packet.acknum);
+        new_ACKs++;
+
+        /* slide window*/
+        oddest = A_windowfirst;
+        while (acked[A_windowfirst] && A_windowcount > 0)
+        {
+          A_windowfirst = (A_windowfirst + 1) % SEQSPACE;
+          A_windowcount--;
+        }
+        if (oddest != A_windowfirst)
+        {
+          stoptimer(A);
+          if (A_windowcount > 0)
+          {
+            starttimer(A, RTT);
+          }
+        }
       }
     }
     else if (TRACE > 0)
@@ -165,7 +173,7 @@ void A_timerinterrupt(void)
   int i, p;
   if (TRACE > 0)
     printf("----A: time out,resend packets!\n");
-  for (i = 0; i < A_windowcount; i++)
+  for (i = 0; i < 1; i++)
   {
     p = (i + A_windowfirst) % SEQSPACE;
     if (TRACE > 0)
@@ -190,7 +198,6 @@ void A_init(void)
       so initially this is set to -1
     */
   A_windowcount = 0;
-
   for (i = 0; i < SEQSPACE; i++)
   {
     acked[i] = true;
