@@ -1,0 +1,173 @@
+commit 2c4502efa961f64c51b7a711b86f089319fcba93
+Author: a1868575 <109933704+a1868575@users.noreply.github.com>
+Date:   Sat May 3 01:00:45 2025 +0930
+
+    Fix: Based on the result of the submission test autograder output, I realized that the SR algorithm chooses not to reply and does not output when the packet from A to B is corrupted.
+
+commit 1ab96cb4c7dafe32b14bb0e0cf314ece98dac2c8
+Author: a1868575 <109933704+a1868575@users.noreply.github.com>
+Date:   Sat May 3 00:32:41 2025 +0930
+
+    Update B_input. Fix:  Based on the feedback form the results of the commit test, find error when I did return on the B side, for the previous window's ack, I was also supposed to validate it, which I had failed to do with my previous logic.
+
+commit b7583ed5612f90d046c0051ace9582ba20ca9f9a
+Author: a1868575 <109933704+a1868575@users.noreply.github.com>
+Date:   Fri May 2 17:36:50 2025 +0930
+
+    Updated timer related logic based on the instructor's reponse. Fix logic error
+
+commit 5281d7f8d5e2fd9a2b7ec188e5eda37495829b6b
+Author: a1868575 <109933704+a1868575@users.noreply.github.com>
+Date:   Fri May 2 01:33:46 2025 +0930
+
+    Refactored timer related logic based on the relevant output from trace.
+
+commit 1a7b8973b2f6562292f9ff055798c56d8e2b6feb
+Author: a1868575 <109933704+a1868575@users.noreply.github.com>
+Date:   Thu May 1 22:30:56 2025 +0930
+
+    Update the logic A_timerinterrupt based on the relevant output from trace
+
+commit cb7f3d7bf67f6a54a97e16837b0a19b005aa681b
+Author: a1868575 <109933704+a1868575@users.noreply.github.com>
+Date:   Thu May 1 22:17:00 2025 +0930
+
+    Based on the piazza answer, update B_input to behave when it receives error ack
+
+commit 717043145797a81ecd97f2cc6ffeb868725aaad1
+Author: a1868575 <109933704+a1868575@users.noreply.github.com>
+Date:   Thu May 1 21:43:47 2025 +0930
+
+    Update A_timerinterrupt logic try to pass the Oracle test
+
+commit 6f3523c0591dcc3924e4e88d69fd3e03090e3254
+Author: a1868575 <109933704+a1868575@users.noreply.github.com>
+Date:   Thu May 1 21:15:58 2025 +0930
+
+    Fix: update  B_input logic to pass full trace check
+
+commit 734332f10d9510fac4dc761d31e6f96c5e3b2280
+Author: a1868575 <109933704+a1868575@users.noreply.github.com>
+Date:   Thu May 1 20:42:59 2025 +0930
+
+    Fix logical error due to misplaced braces. Because of extern can't get the variable time in the simulator modified by the static keyword, I refactored the logic of the timer to do a stop and check for anything that needs to be retransmitted at the time of each tick. Also updated the function timer logic for A_input and A_output.
+
+commit ab7a3e27e6d26c7227700ff442b830368f92a25c
+Author: a1868575 <109933704+a1868575@users.noreply.github.com>
+Date:   Thu May 1 19:37:56 2025 +0930
+
+    Revised code structure to comply with C90 standard
+
+commit 085f6287de180441f9bda86c6508ec79c9149aa6
+Author: a1868575 <109933704+a1868575@users.noreply.github.com>
+Date:   Thu May 1 19:15:02 2025 +0930
+
+    Fix warning // comments are not allowed in this language. Fix logic error in B_input and  A_input. A_input: slide window did not shrink on duplicate ACKs. Fixed loop condition. B_input: incorrect sequence window boundary caused rejection of valid packets, adjusted condition to correctly handle window wrap around
+
+commit f98ef747bbe0b32b78319d649671b96f7d8fd43c
+Author: a1868575 <109933704+a1868575@users.noreply.github.com>
+Date:   Thu May 1 03:05:46 2025 +0930
+
+    Add B_nextseqnum variable for ACK sequencing. Update B_input method for SR
+
+commit 17c2ad1e780412fbf808490e80d117dc17604f72
+Author: a1868575 <109933704+a1868575@users.noreply.github.com>
+Date:   Thu May 1 01:32:36 2025 +0930
+
+    Updated B side data structures. Added receive buffer and an array to record whether each sequence number has been received. Fix warning 'int i'.
+
+commit 516785210ebc8bee6100c7b198ca594fb6813452
+Author: a1868575 <109933704+a1868575@users.noreply.github.com>
+Date:   Thu May 1 00:31:07 2025 +0930
+
+    Update A_input, reset timer after processing a new, uncorrupted ACK and slide the window accordingly. Fix Error '{} expected identifier' and warning mixing declarations
+
+commit 8767d2781b7eba2c64c22418044805563f787b84
+Author: a1868575 <109933704+a1868575@users.noreply.github.com>
+Date:   Wed Apr 30 23:37:00 2025 +0930
+
+    Fix 'int i' and 'int pos' warning: mixing declarations and code is a c99 extension.
+
+commit 969b8123a42aad4ffe90402e144ffec3db7afd1e
+Author: a1868575 <109933704+a1868575@users.noreply.github.com>
+Date:   Wed Apr 30 23:25:35 2025 +0930
+
+    Updated A_init and A_timerinterrupt function. Scan for each unacknowledged one that has reached the resend time and resend it.
+
+commit 5c74ef7b63768693558976cdc0eb1193e7d0a54f
+Author: a1868575 <109933704+a1868575@users.noreply.github.com>
+Date:   Wed Apr 30 22:52:54 2025 +0930
+
+    Fix 'int i' warning: mixing declarations and code is a C99 extension
+
+commit 424a9ca2f6d5237fedc59301d94ac51eec8b2dbe
+Author: a1868575 <109933704+a1868575@users.noreply.github.com>
+Date:   Wed Apr 30 22:45:57 2025 +0930
+
+    Updated the help_set_timer function. Stopded the current timer. Scanned the window for the earliest unacknowledged packet. Calculated the timeout time based on the RTT. Started the timer for the earliest unacknowledged packet
+
+commit ce0d0ce6d1a34d2e20559dac4e02113cd8bf4800
+Author: a1868575 <109933704+a1868575@users.noreply.github.com>
+Date:   Wed Apr 30 02:33:22 2025 +0930
+
+    Fix warning by replacing 'bool' with 'int' to avoid C99 _Bool usage under -ansi
+
+commit ff090d55c574fb9d9f41dca14bfd6b9dbb7e028a
+Author: a1868575 <109933704+a1868575@users.noreply.github.com>
+Date:   Wed Apr 30 02:13:37 2025 +0930
+
+    Fix gbn.h warning: no newline at end of file
+
+commit 94f1484ce11b21e4bf067b00746b160603ef7fdd
+Author: a1868575 <109933704+a1868575@users.noreply.github.com>
+Date:   Wed Apr 30 02:10:33 2025 +0930
+
+    Add original gbn.c and gbn.h  back due to earlier misunderstanding (renamed instead of copying)
+
+commit 1f0fc6761d19b4897142609e55dfaf83667252e2
+Author: a1868575 <109933704+a1868575@users.noreply.github.com>
+Date:   Wed Apr 30 02:05:34 2025 +0930
+
+    Fix 'warning://comments are not allowed in this language
+
+commit 2f568477813d8c8f97759d1d6a8e22a2aaa384c2
+Author: a1868575 <109933704+a1868575@users.noreply.github.com>
+Date:   Wed Apr 30 02:01:42 2025 +0930
+
+    Update the A_output to use help_set_timer for interrupt.
+
+commit db7e5c35bdaa57318105ea006cdd3bffb4a7815f
+Author: a1868575 <109933704+a1868575@users.noreply.github.com>
+Date:   Wed Apr 30 01:20:38 2025 +0930
+
+    fix ';' error and file warnings. Fixed the error expected ';' after testing and debugging. Fixed  the 'no newline at end of file' warnings in 'sr.h' and 'emulator.c' files'.
+
+commit 2c4cc2b5f7eaf4ff363ea1808aa21efdd9af96fc
+Author: a1868575 <109933704+a1868575@users.noreply.github.com>
+Date:   Wed Apr 30 01:07:35 2025 +0930
+
+    To implement the SR, double the size of the sending window compared to the GBN.Set a timer for each frame sent. Add  some data structures and change some variables to make it more understandable
+
+commit 66b31563bce743392ed76d7fa866c875d933cd10
+Author: a1868575 <109933704+a1868575@users.noreply.github.com>
+Date:   Sat Apr 26 20:23:03 2025 +0930
+
+    Deleted gbn
+
+commit ef5385f013da40310bc27ef8b116052e9e8ab1d4
+Author: a1868575 <109933704+a1868575@users.noreply.github.com>
+Date:   Sat Apr 26 20:20:44 2025 +0930
+
+    Rename gbn.c and gbn.h to sr.c and sr.h. Fix Bug:fatal error, gbn.h file not found
+
+commit 3d18263965c2c58d6e6397a8a2c99e0563baf367
+Author: a1868575 <109933704+a1868575@users.noreply.github.com>
+Date:   Sat Apr 26 19:44:10 2025 +0930
+
+    Initial commit.  Added files and tested git setup
+
+commit a5f241b4909f8907dceb89755a8b187d1909566a
+Author: Jc0404 <112538493+Jc0404@users.noreply.github.com>
+Date:   Sat Apr 26 19:12:18 2025 +0930
+
+    Initial commit
